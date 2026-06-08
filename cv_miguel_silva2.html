@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miguel Angel Silva Soto</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0a;--surf:#111;--c:#00d4ff;--cdim:rgba(0,212,255,.12);--cglow:rgba(0,212,255,.35);--w:#fff;--g:#777;--bdr:rgba(0,212,255,.14)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--w);overflow-x:hidden}
+@media(pointer:fine){*{cursor:none!important}}
+
+#cur,#cdot{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+#cur{width:22px;height:22px;border:1.5px solid var(--c);box-shadow:0 0 10px var(--cglow);transition:transform .12s,background .2s}
+#cdot{width:4px;height:4px;background:var(--c)}
+#bgc{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+nav{position:fixed;inset:0 0 auto;z-index:100;padding:.8rem 1.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(10,10,10,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr)}
+.nlogo{font-size:.8rem;font-weight:700;color:var(--c);letter-spacing:3px}
+.nlinks{display:flex;gap:1.5rem;list-style:none}
+.nlinks a{color:var(--g);text-decoration:none;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;transition:color .25s;position:relative}
+.nlinks a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--c);transition:width .3s}
+.nlinks a:hover,.nlinks a.act{color:var(--c)}
+.nlinks a.act::after,.nlinks a:hover::after{width:100%}
+
+.hamburger{display:none;flex-direction:column;gap:5px;background:transparent;border:none;padding:4px;z-index:101}
+.hamburger span{display:block;width:22px;height:2px;background:var(--c);transition:all .3s;border-radius:2px}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+main{position:relative;z-index:1}
+section{padding:60px 2rem 35px;max-width:920px;margin:0 auto}
+.slabel{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--c);margin-bottom:.4rem}
+.stitle{font-size:2.1rem;font-weight:700;margin-bottom:1.8rem}
+
+#hero{display:flex;flex-direction:column;justify-content:center;min-height:100vh;padding-top:60px}
+.hero-inner{display:flex;align-items:center;gap:2.5rem}
+.hero-content{flex:1;min-width:0}
+.hero-photo-wrap{width:200px;height:200px;border-radius:50%;overflow:hidden;border:2px solid var(--c);box-shadow:0 0 30px var(--cdim);flex-shrink:0;opacity:0;animation:fu .8s ease forwards .3s}
+.hero-photo-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.htag{font-size:.72rem;letter-spacing:4px;text-transform:uppercase;color:var(--c);margin-bottom:1rem;opacity:0;animation:fu .8s ease forwards .2s}
+.hname{font-size:clamp(2.2rem,6vw,4.5rem);font-weight:700;line-height:1.05;letter-spacing:-1px;opacity:0;animation:fu .8s ease forwards .4s}
+.hname span{color:var(--c)}
+.hroles{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem;opacity:0;animation:fu .8s ease forwards .6s}
+.rchip{padding:.28rem .75rem;border:1px solid var(--bdr);border-radius:4px;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;color:var(--c);background:var(--cdim);transition:all .2s;user-select:none}
+.rchip:hover{background:rgba(0,212,255,.22);border-color:var(--c)}
+.rchip.active{background:var(--c);color:#000;border-color:var(--c);font-weight:700}
+.hdesc{max-width:520px;color:var(--g);line-height:1.75;margin-top:1rem;font-size:.9rem;opacity:0;animation:fu .8s ease forwards .8s;transition:opacity .3s}
+.hcontacts{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem;opacity:0;animation:fu .8s ease forwards 1s}
+.cchip{display:flex;align-items:center;gap:.4rem;padding:.38rem .8rem;border:1px solid var(--bdr);border-radius:100px;color:var(--g);text-decoration:none;font-size:.76rem;transition:all .25s;background:rgba(0,212,255,.03)}
+.cchip:hover{border-color:var(--c);color:var(--c);box-shadow:0 0 12px var(--cdim)}
+.cchip svg{width:12px;height:12px;flex-shrink:0}
+.scrl{display:flex;align-items:center;gap:.7rem;color:var(--g);font-size:.7rem;letter-spacing:2px;text-transform:uppercase;margin-top:2rem;opacity:0;animation:fu .8s ease forwards 1.2s}
+.sline{width:36px;height:1px;background:var(--c);overflow:hidden;position:relative}
+.sline::after{content:'';position:absolute;inset:0 auto 0 -100%;width:100%;background:rgba(255,255,255,.6);animation:sl 2s ease infinite}
+
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:1.8rem}
+.atext{color:rgba(255,255,255,.72);line-height:1.8;font-size:.9rem;transition:opacity .3s}
+.atext b{color:var(--w)}
+.atext em{color:var(--c);font-style:normal}
+.astats{display:flex;flex-direction:column;gap:.7rem}
+.scard{padding:.9rem 1.1rem;border:1px solid var(--bdr);border-radius:8px;background:var(--surf);transition:border-color .3s,box-shadow .3s}
+.scard:hover{border-color:var(--c);box-shadow:0 0 16px var(--cdim)}
+.sv{font-size:1.7rem;font-weight:700;color:var(--c)}
+.sl{font-size:.7rem;color:var(--g);text-transform:uppercase;letter-spacing:1px}
+
+.tl{position:relative;padding-left:2rem;transition:opacity .3s}
+.tl::before{content:'';position:absolute;left:0;inset-block:0;width:1px;background:var(--bdr)}
+.titem{position:relative;margin-bottom:2.2rem;padding-left:1.3rem}
+.titem::before{content:'';position:absolute;left:-2.2rem;top:.35rem;width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.tdate{font-size:.7rem;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:.15rem}
+.tloc{font-size:.68rem;color:var(--g);margin-bottom:.15rem}
+.tco{font-size:1rem;font-weight:600;color:var(--w);margin-bottom:.1rem}
+.trole{font-size:.8rem;color:var(--c);margin-bottom:.5rem;font-weight:500}
+.ttags{display:flex;flex-wrap:wrap;gap:.27rem;margin-bottom:.55rem}
+.ttag{padding:.15rem .5rem;background:var(--cdim);border:1px solid var(--bdr);border-radius:4px;font-size:.66rem;color:var(--c)}
+.tlist{list-style:none;color:rgba(255,255,255,.6);font-size:.84rem;line-height:1.7}
+.tlist li{position:relative;padding-left:.85rem;margin-bottom:.18rem}
+.tlist li::before{content:'›';position:absolute;left:0;color:var(--c)}
+
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.2rem;transition:opacity .3s}
+.skcol{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:1.2rem;transition:border-color .3s,box-shadow .3s}
+.skcol:hover{border-color:var(--c);box-shadow:0 0 20px var(--cdim)}
+.sktitle{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--c);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid var(--bdr)}
+.ski{margin-bottom:.78rem}
+.skh{display:flex;justify-content:space-between;margin-bottom:.28rem;font-size:.8rem}
+.skn{color:var(--w)}
+.skp{color:var(--c);font-size:.7rem}
+.skbar{height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+.skfill{height:100%;background:linear-gradient(90deg,var(--c),rgba(0,212,255,.3));border-radius:2px;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1);box-shadow:0 0 6px var(--cglow)}
+
+.qa-list{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.qa-item{padding:.6rem 1rem;background:var(--cdim);border:1px solid var(--bdr);border-radius:8px;font-size:.84rem;color:rgba(255,255,255,.72);display:flex;align-items:flex-start;gap:.6rem;line-height:1.5}
+.qa-item::before{content:'›';color:var(--c);font-size:1.1rem;flex-shrink:0}
+
+.tsec{margin-top:2rem}
+.tgrid{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1rem;transition:opacity .3s}
+.tbadge{display:flex;align-items:center;gap:.5rem;padding:.45rem .85rem;border:1px solid var(--bdr);border-radius:8px;background:var(--surf);font-size:.8rem;color:var(--w);transition:all .25s}
+.tbadge:hover{border-color:var(--c);box-shadow:0 0 12px var(--cdim);transform:translateY(-2px)}
+.tico{width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:5px;flex-shrink:0}
+.tico svg,.tico img{width:18px;height:18px}
+
+.soc-grid{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.2rem}
+.soc-link{display:flex;align-items:center;gap:.5rem;padding:.45rem .85rem;border:1px solid var(--bdr);border-radius:8px;text-decoration:none;font-size:.8rem;color:var(--g);background:var(--surf);transition:all .25s}
+.soc-link:hover{border-color:currentColor;transform:translateY(-2px)}
+.soc-link svg{width:16px;height:16px;flex-shrink:0}
+
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.rcard{background:var(--surf);border:1px solid var(--bdr);border-radius:12px;padding:1.2rem;transition:all .3s}
+.rcard:hover{border-color:var(--c);box-shadow:0 0 20px var(--cdim)}
+.rname{font-size:1rem;font-weight:600;margin-bottom:.2rem}
+.rco{font-size:.75rem;color:var(--c);text-transform:uppercase;letter-spacing:1px;margin-bottom:.7rem}
+.rinfo{font-size:.8rem;color:var(--g);line-height:1.9}
+
+.fab{position:fixed;bottom:1.5rem;right:1.5rem;z-index:50;display:flex;align-items:center;gap:.5rem;padding:.6rem 1.1rem;background:var(--c);color:#000;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:100px;border:none;box-shadow:0 0 16px var(--cglow);transition:transform .3s,box-shadow .3s;font-family:'Space Grotesk',sans-serif}
+.fab:hover{transform:translateY(-3px);box-shadow:0 0 28px var(--cglow)}
+footer{text-align:center;padding:2rem;color:var(--g);font-size:.78rem;border-top:1px solid var(--bdr);position:relative;z-index:1}
+.fading{opacity:0!important}
+
+@keyframes fu{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes sl{from{left:-100%}to{left:100%}}
+.fi{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.fi.vis{opacity:1;transform:translateY(0)}
+
+/* ── MOBILE ─────────────────────────────────────── */
+@media(max-width:700px){
+  .hamburger{display:flex}
+
+  /* Menú compacto: aparece justo debajo de la navbar, no cubre toda la pantalla */
+  .nlinks{
+    display:none;
+    position:fixed;
+    top:56px;
+    left:0;
+    right:0;
+    background:rgba(10,10,10,.96);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--bdr);
+    flex-direction:row;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
+    gap:.1rem;
+    z-index:99;
+    padding:.55rem .4rem;
+  }
+  .nlinks.open{display:flex}
+  .nlinks li{margin:0}
+  .nlinks a{font-size:.7rem;letter-spacing:1px;padding:.45rem .6rem}
+
+  .hero-inner{flex-direction:column-reverse;gap:1.5rem}
+  .hero-photo-wrap{width:140px;height:140px;margin:0 auto}
+  .hname{font-size:2.2rem}
+  .agrid{grid-template-columns:1fr}
+  section{padding:50px 1.1rem 28px}
+  .stitle{font-size:1.7rem}
+  .sgrid{grid-template-columns:1fr}
+  .hroles{gap:.35rem}
+  .rchip{font-size:.64rem}
+}
+@media(max-width:480px){
+  .hname{font-size:1.9rem}
+  .hcontacts{gap:.4rem}
+  .cchip{font-size:.7rem;padding:.32rem .65rem}
+}
+
+/* ── IMPRESIÓN: todo el texto neon → negro legible ─ */
+@media print{
+  /* Ocultar elementos decorativos/interactivos */
+  #bgc,#cur,#cdot,.fab,.hamburger,.scrl{display:none!important}
+
+  /* Fondo blanco y texto negro en todo */
+  *{
+    color:#111!important;
+    background:transparent!important;
+    background-color:transparent!important;
+    text-shadow:none!important;
+    box-shadow:none!important;
+    animation:none!important;
+    transition:none!important;
+    border-color:#ccc!important;
+  }
+  html,body{background:#fff!important}
+
+  /* Nav estático */
+  nav{
+    position:static!important;
+    backdrop-filter:none!important;
+    background:#fff!important;
+    border-bottom:1px solid #ddd!important;
+  }
+
+  /* Hero compacto */
+  #hero{min-height:auto!important;padding-top:70px!important}
+  .hero-photo-wrap{border:2px solid #aaa!important}
+
+  /* Asegurar visibilidad de elementos animados */
+  .fi,.rchip,.rchip.active{opacity:1!important;transform:none!important}
+  .rchip.active{background:#ddd!important;color:#000!important}
+
+  /* Cards con fondo claro */
+  .skcol,.scard,.rcard,.qa-item,.tbadge{background:#f6f6f6!important;border:1px solid #ccc!important}
+  .soc-link{background:#f0f0f0!important;border:1px solid #ccc!important}
+  .ttag{background:#ebebeb!important;border:1px solid #ccc!important}
+
+  /* Barras de habilidades */
+  .skbar{background:#e0e0e0!important}
+  .skfill{
+    background:#444!important;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  /* Timeline */
+  .tl::before{background:#bbb!important}
+  .titem::before{background:#555!important}
+
+  section{padding:18px 1.5rem 12px!important}
+  footer{border-top:1px solid #ddd!important}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cdot"></div>
+<canvas id="bgc"></canvas>
+
+<nav>
+  <div class="nlogo">MASS</div>
+  <ul class="nlinks" id="nlinks">
+    <li><a href="#hero">Inicio</a></li>
+    <li><a href="#about">Sobre mí</a></li>
+    <li><a href="#exp">Experiencia</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#edu">Educación</a></li>
+    <li><a href="#contact">Contacto</a></li>
+  </ul>
+  <button class="hamburger" id="hbg" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<main>
+<section id="hero">
+  <p class="htag">// Portafolio profesional · 2026</p>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <h1 class="hname">Miguel Angel<br><span>Silva Soto</span></h1>
+      <div class="hroles">
+        <div> <span class="rchip" data-disc="all">Interactive Visual Artist</span> </div>
+      </div>
+      <div class="hroles">
+        <span class="rchip" data-disc="qa">QA Tester</span>
+        <span class="rchip" data-disc="uxui">UI/UX Designer</span>
+        <span class="rchip" data-disc="3d">3D Artist &amp; Rendering</span>
+      </div>
+      <p class="hdesc" id="hero-desc">Artista digital especializado en ilustración 2D, UI/UX y desarrollo 3D. Combino creatividad y precisión técnica en videojuegos, animación y aplicaciones interactivas.</p>
+      <div class="hcontacts">
+        <a href="tel:+524341366690" class="cchip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+          434 136 6690
+        </a>
+        <a href="mailto:miguel.dev.1998@gmail.com" class="cchip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          miguel.dev.1998@gmail.com
+        </a>
+        <a href="https://direct.me/3vil_time" target="_blank" class="cchip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          direct.me/3vil_time
+        </a>
+      </div>
+      <div class="scrl"><div class="sline"></div>Scroll para explorar</div>
+    </div>
+    <div class="hero-photo-wrap">
+      <img id="profile-photo"
+           src="https://cdn.direct.me/avatars/272066.png?1772500711"
+           alt="Miguel Angel Silva Soto"
+           onerror="this.style.display='none'">
+    </div>
+  </div>
+  <p style="white-space: nowrap;"></p>
+</section>
+
+<section id="about">
+  <p class="slabel fi">// 01 — Perfil</p>
+  <h2 class="stitle fi">Sobre mí</h2>
+  <div class="agrid fi">
+    <div class="atext"><p id="about-text"></p></div>
+    <div class="astats">
+      <div class="scard"><div class="sv">5+</div><div class="sl">Años de experiencia</div></div>
+      <div class="scard"><div class="sv">3</div><div class="sl">Áreas de especialización</div></div>
+      <div class="scard"><div class="sv">2</div><div class="sl">Grados académicos</div></div>
+      <div class="scard"><div class="sv">5+</div><div class="sl">Proyectos en los que he participado</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="exp">
+  <p class="slabel fi">// 02 — Trayectoria</p>
+  <h2 class="stitle fi">Experiencia</h2>
+  <div class="tl" id="exp-list"></div>
+</section>
+
+<section id="skills">
+  <p class="slabel fi">// 03 — Habilidades</p>
+  <h2 class="stitle fi">Skills</h2>
+  <div class="sgrid" id="skills-grid"></div>
+  <div class="tsec fi">
+    <p class="slabel">Software &amp; Herramientas</p>
+    <div class="tgrid" id="tools-grid"></div>
+  </div>
+</section>
+
+<section id="edu">
+  <p class="slabel fi">// 04 — Formación</p>
+  <h2 class="stitle fi">Educación</h2>
+  <div class="tl fi">
+    <div class="titem">
+      <div class="tdate">2016 — 2020</div>
+      <div class="tloc">Morelia, Michoacán</div>
+      <div class="tco">Universidad de Morelia</div>
+      <div class="trole">Ingeniería en Videojuegos — Titulado</div>
+    </div>
+    <div class="titem">
+      <div class="tdate">2022 — 2024</div>
+      <div class="tloc">Morelia, Michoacán</div>
+      <div class="tco">Universidad de Morelia</div>
+      <div class="trole">Arte Digital y Efectos Visuales (VFX) — Graduado</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <p class="slabel fi">// 05 — Contacto</p>
+  <h2 class="stitle fi">Encuéntrame en</h2>
+  <div class="soc-grid fi" id="soc-grid"></div>
+  <h2 class="stitle fi" style="margin-top:2.4rem;font-size:1.5rem">Referencias</h2>
+  <div class="rgrid fi">
+    <div class="rcard"><div class="rname">Olivia Ponce de León Macedo</div><div class="rco">Cliente Freelance</div><div class="rinfo"><div>📞 +52 443 109 7497</div><div>✉️ olipolemac@gmail.com</div></div></div>
+    <div class="rcard"><div class="rname">Alejandra Soto Reyes</div><div class="rco">Grupo ORS</div><div class="rinfo"><div>📞 +52 443 156 1163</div><div>✉️ drajan777@gmail.com</div></div></div>
+    <div class="rcard"><div class="rname">Benny Santoyo Perez</div><div class="rco">WASDEVELOPER STUDIO</div><div class="rinfo"><div>📞 +52 443 214 4053</div><div>✉️ maggot15aseeck@gmail.com</div></div></div>
+  </div>
+</section>
+</main>
+
+<button class="fab" onclick="window.print()">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  Descargar CV
+</button>
+<footer>Miguel Angel Silva Soto &nbsp;·&nbsp; Pátzcuaro, Michoacán &nbsp;·&nbsp; 2026</footer>
+
+<script>
+const IC={
+  ue5:`<img src="https://img.icons8.com/ios_filled/512/FFFFFF/unreal-engine.png" width="18" height="18">`,
+  unity:`<img src="https://img.icons8.com/ios_filled/512/FFFFFF/unity.png" width="18" height="18">`,
+  jira:`<img src="https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/4/jira-pnycaxr0fbihcuqxhf489.png/jira-bvilsaksrdmiyyicl77kip.png?_a=DATAiZiuZAA0" width="18" height="18" fill="white">`,
+  trello:`<svg width="18" height="18" viewBox="0 0 32 32" fill="white"><path d="M28 0H4C1.8 0 0 1.8 0 4v24c0 2.2 1.8 4 4 4h24c2.2 0 4-1.8 4-4V4c0-2.2-1.8-4-4-4zM14 22.7c0 .7-.6 1.3-1.3 1.3H6c-.7 0-1.3-.6-1.3-1.3V5.3C4.7 4.6 5.3 4 6 4h6.7c.7 0 1.3.6 1.3 1.3v17.4zm13.3-8c0 .7-.6 1.3-1.3 1.3h-6.7c-.7 0-1.3-.6-1.3-1.3V5.3C18 4.6 18.6 4 19.3 4H26c.7 0 1.3.6 1.3 1.3v9.4z"/></svg>`,
+  github:`<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0112 6.836c.774.003 1.554.104 2.504.337 1.909-1.294 2.748-1.026 2.748-1.026.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.74 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>`,
+  msoffice:`<img src="https://img.icons8.com/ios_filled/512/FFFFFF/microsoft-office-2019.png" width="18" height="18">`,
+  psAdobe:`<svg width="18" height="18" viewBox="0 0 100 100"><rect width="100" height="100" rx="12" fill="#001E36"/><text x="50" y="68" font-family="Arial Black,Arial" font-weight="900" font-size="44" fill="#31A8FF" text-anchor="middle">Ps</text></svg>`,
+  aiAdobe:`<svg width="18" height="18" viewBox="0 0 100 100"><rect width="100" height="100" rx="12" fill="#1A0A00"/><text x="50" y="68" font-family="Arial Black,Arial" font-weight="900" font-size="44" fill="#FF9A00" text-anchor="middle">Ai</text></svg>`,
+  vuforia:`<img src="https://foks-lab.fr/wp-content/uploads/2022/02/logoVuforia.jpg" width="38" height="38">`,
+  toonboom:`<img src="https://docs.toonboom.com/help/harmony-20/icons/1-essentials.png" width="38" height="38">`,
+  maya:`<img src="https://pluspng.com/img-png/autodesk-maya-logo-png-autodesk-maya-logo-png-1200x1200px-autodesk-maya-aqua-820x820.jpg" width="18" height="18">`,
+  cinema4d:`<img src="https://img.icons8.com/color/600/cinema-4d.png" width="18" height="18">`,
+  zbrush:`<img src="https://www.nicepng.com/png/full/209-2091028_zbrush-zbrush-4r8-logo.png" width="18" height="18">`,
+  megascans:`<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFQE0HwunwwU1NO1qRsMGpNZY94nyGZelBVw&s" width="18" height="18">`,
+  twinmotion:`<img src="https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/logos/twinmotion-mkkr9xy6825tq07cyze8h.png/twinmotion-iqkx9ipkzq8usuikajcx4.png?_a=DATAiZAAZAA0" width="18" height="18">`,
+};
+const TM={
+  ue5:{name:'Unreal Engine 5',bg:'#1a1a1a',bd:'#ffffff'},
+  unity:{name:'Unity',bg:'#222',bd:'#ffffff'},
+  jira:{name:'Jira',bg:'#ffffff',bd:'#0052cc'},
+  trello:{name:'Trello',bg:'#0079bf',bd:'#ffffff'},
+  github:{name:'GitHub',bg:'#24292e',bd:'#ffffff'},
+  msoffice:{name:'MS Office',bg:'#d83b01',bd:'#ffffff'},
+  psAdobe:{name:'Photoshop',bg:'#001E36',bd:'#31A8FF'},
+  aiAdobe:{name:'Illustrator',bg:'#1A0A00',bd:'#FF9A00'},
+  vuforia:{name:'Vuforia',bg:'#3c4647',bd:'#ffffff'},
+  toonboom:{name:'Toon Boom Harmony',bg:'#ffffff',bd:'#5ac4be'},
+  maya:{name:'Maya',bg:'#ffffff',bd:'#1B6B96'},
+  cinema4d:{name:'Cinema 4D',bg:'#1a1a1a',bd:'#ffffff'},
+  zbrush:{name:'ZBrush',bg:'#1A1A1A',bd:'#F57C00'},
+  megascans:{name:'Megascans',bg:'#8bc24a',bd:'#ffffff'},
+  twinmotion:{name:'Twinmotion',bg:'#ffffff',bd:'#000000'},
+};
+
+const SOCIALS=[
+  {name:'LinkedIn',url:'https://www.linkedin.com/in/3viltime',color:'#0A66C2',
+   svg:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`},
+  {name:'ArtStation',url:'https://www.artstation.com/eviltime',color:'#13AFF0',
+   svg:`<img src="https://static.cdnlogo.com/logos/a/78/artstation.svg" width="18" height="18">`},
+  {name:'Sketchfab',url:'https://sketchfab.com/3VILTiMe',color:'#1CAAD9',
+   svg:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0zm5.49 7.403L12 10.976 6.51 7.403 12 3.83l5.49 3.573zM5.005 8.577l5.49 3.574v7.146L5.005 15.72V8.577zm8.5 10.72v-7.146l5.49-3.574V15.72l-5.49 3.577z"/></svg>`},
+  {name:'Instagram',url:'https://www.instagram.com/mike.dev.1998/',color:'#E4405F',
+   svg:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>`},
+  {name:'Itch.io',url:'https://3vil-time.itch.io/',color:'#ff2449',
+   svg:`<img src="https://brandlogos.net/wp-content/uploads/2025/12/itch.io-logo_brandlogos.net_bhtjr.png" width="18" height="18">`},
+  {name:'Twitch',url:'https://www.twitch.tv/3viltim3',color:'#9147FF',
+   svg:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>`},
+];
+
+const D={
+  all:{
+    desc:'Artista digital especializado en ilustración 2D, UI/UX y desarrollo 3D. Combino creatividad y precisión técnica en videojuegos, animación y aplicaciones interactivas.',
+    about:'Soy un <em>artista digital</em> especializado en ilustración 2D, UI/UX y desarrollo 3D. Me apasiona crear experiencias visuales, desde interfaces intuitivas hasta modelado y renderizado en Unreal Engine 5. Con formación en <b>Ingeniería en Videojuegos</b> y <b>Arte Digital & VFX</b>, combino creatividad y precisión técnica para desarrollar contenido atractivo en videojuegos, animación y aplicaciones interactivas. Siempre busco innovar y mejorar la calidad visual en cada proyecto. 🚀',
+    exp:[
+      {date:'2020 — 2024',co:'GAME JAM ANUALES',loc:'Morelia',role:'2D ARTIST & UI/UX DESIGNER',tags:['Vectorización','UI','Unity'],b:['Creación de ilustraciones y assets 2D para videojuegos','Adaptación visual bajo limitaciones de tiempo y producción ágil.']},
+      {date:'2020 — 2021',co:'GRUPO ORS',loc:'Morelia',role:'3D ARTIST & RENDERING',tags:['3D Art','Rendering','Unreal Engine'],b:['Modelado 3D especializado en mas de 20 dispositivos eléctricos para hospitales','Renderización estática y de video de alta calidad','Ajustes de materiales, iluminación y composición para presentación de producto.']},
+      {date:'2022 — 2024',co:'FREELANCER',loc:'Morelia',role:'UNITY DEVELOPER & UI/UX DESIGNER (AR)',tags:['Unity','AR','UI/UX'],b:['Desarrollo de aplicaciones en Unity para móviles con enfoque en Realidad Aumentada','Diseño y programación de interfaces para mejorar la experiencia del usuario']},
+      {date:'2022 — Actualidad',co:'WASDEVELOPER STUDIO',loc:'Morelia',role:'3D ARTIST · UI/UX DESIGNER · ENVIRONMENT DEVELOPER',tags:['Unreal Engine','Unity','2D/3D Art','UI/UX'],b:['Desarrollo especializado en entornos 3D en Unreal Engine 5','Diseño UI/UX para aplicaciones móviles','Modelado 3D, iluminación y renderizado de entornos y objetos']},
+    ],
+    skillType:'bars',
+    skills:[
+      {t:'3D Artist & Rendering',i:[{n:'Modelado 3D',p:80},{n:'Rendering',p:85},{n:'Props',p:80},{n:'Fotogrametría',p:75},{n:'Environment',p:75},{n:'Animación 3D',p:70},{n:'Motion Graphics',p:50}]},
+      {t:'UI / UX & 2D Art',i:[{n:'Vectorización',p:100},{n:'UI Design',p:90},{n:'UX Design',p:85},{n:'Props 2D',p:80},{n:'Animación 2D',p:70},{n:'Concept Art',p:50},{n:'Ilustración',p:40}]},
+      {t:'QA / Testing',i:[{n:'Documentación',p:95},{n:'Pensamiento analítico',p:85},{n:'Detección de errores',p:80},{n:'Validación funcional',p:75}]},
+    ],
+    tools:['ue5','unity','msoffice','jira','trello','psAdobe','aiAdobe','maya','cinema4d','github'],
+  },
+  qa:{
+    desc:'Entusiasta del aseguramiento de calidad con formación en videojuegos. Apasionado por el análisis, la mejora continua y la calidad del producto final.',
+    about:'Entusiasta del <em>aseguramiento de calidad</em> con formación en desarrollo de videojuegos y experiencia en producción 3D. Apasionado por el análisis, la mejora continua y la calidad del producto final. Busco una posición como QA Tester Junior para aplicar mi atención al detalle, pensamiento crítico y experiencia técnica en entornos de desarrollo. Comprometido con aprender metodologías de prueba, flujos de trabajo <b>Agile/Scrum</b> y contribuir a la mejora de procesos en equipos de desarrollo.',
+    exp:[
+      {date:'2020 — 2024',co:'GAME JAM ANUALES',loc:'Morelia',role:'2D ARTIST & UI/UX DESIGNER',tags:['2D Art','Unity','UI/UX'],b:['Pruebas rápidas de interfaces en entornos de desarrollo ágil.','Identificación de fallos funcionales bajo tiempos limitados.','Validación de interacción básica entre usuario y sistema.']},
+      {date:'2022 — 2023',co:'FREELANCER',loc:'Morelia',role:'UNITY DEVELOPER & UI/UX DESIGNER (AR)',tags:['Unity','AR','UI/UX'],b:['Pruebas funcionales en aplicaciones móviles con enfoque en Realidad Aumentada.','Validación de interfaces y navegación en dispositivos móviles.']},
+      {date:'2022 — Actualidad',co:'WASDEVELOPER STUDIO',loc:'Morelia',role:'3D ARTIST & ENVIRONMENT DEVELOPER',tags:['Unreal Engine','Rendering','3D Art'],b:['Pruebas visuales y validación de assets en Unreal Engine 5.','Detección y corrección de errores en iluminación, materiales y optimización.','Iteración técnica basada en retroalimentación del equipo.','Verificación de integración correcta de assets en proyectos interactivos.']},
+    ],
+    skillType:'bars',
+    skills:[
+      {t:'Habilidades QA Tester',i:[
+        {n:'Interés por aprender herramientas y metodologías de QA',p:90},
+        {n:'Documentación clara y organizada de incidencias',p:85},
+        {n:'Manejo básico de Jira y Trello para seguimiento de bugs',p:85},
+        {n:'Trabajo bajo supervisión y colaboración con equipos técnicos',p:80},
+        {n:'Pensamiento analítico y resolución de problemas',p:80},
+        {n:'Capacidad para seguir procesos y procedimientos de prueba',p:75},
+        {n:'Atención al detalle para validar funcionalidades y reportar anomalías',p:75},
+        {n:'Detección de errores visuales y funcionales',p:70},
+      ]},
+    ],
+    tools:['jira','trello','unity','ue5','msoffice','github'],
+  },
+  uxui:{
+    desc:'Artista 2D y Diseñador UI/UX con sólido conocimiento en vectorización, animación y diseño de interfaces centradas en el usuario.',
+    about:'Soy un <em>Artista 2D y Diseñador UI/UX</em> con sólido conocimiento en vectorización, animación y diseño de interfaces. Mi experiencia me permite aportar soluciones creativas en proyectos diversos. Me apasiona transformar ideas complejas en diseños visuales atractivos e interactivos, manteniendo un enfoque en la composición, la narrativa visual y la experiencia del usuario. Siempre busco innovar y mejorar la calidad visual en cada proyecto en el que participo.',
+    exp:[
+      {date:'2020 — 2024',co:'GAME JAM ANUALES',loc:'Morelia',role:'2D ARTIST & UI/UX DESIGNER',tags:['Adobe Illustrator/Photoshop','UI/UX','Unity'],b:['Creación de ilustraciones y assets 2D para videojuegos','Adaptación visual bajo limitaciones de tiempo y producción ágil.']},
+      {date:'2022 — 2024',co:'FREELANCER',loc:'Morelia',role:'UNITY DEVELOPER & UI/UX DESIGNER (AR)',tags:['Unity','AR','UI/UX'],b:['Desarrollo de aplicaciones en Unity para móviles con enfoque en Realidad Aumentada','Diseño y programación de interfaces para mejorar la experiencia del usuario']},
+      {date:'2022 — Actualidad',co:'WASDEVELOPER STUDIO',loc:'Morelia',role:'2D ARTIST & UI/UX DESIGNER',tags:['Unity','UI/UX','Adobe Illustrator/Photoshop'],b:['Organización de contenido UI para aplicaciones móviles','Mejora de navegación y diseño de caminos eficientes en las aplicaciones móviles']},
+    ],
+    skillType:'bars',
+    skills:[
+      {t:'2D Artist / UI-UX',i:[
+        {n:'Vectorización',p:100},{n:'UI Design',p:90},{n:'UX Design',p:85},
+        {n:'Props 2D',p:80},{n:'Animación 2D',p:70},{n:'Motion Graphics',p:60},
+        {n:'Concept Art',p:50},{n:'Ilustración',p:40},
+      ]},
+    ],
+    tools:['psAdobe','aiAdobe','unity','ue5','vuforia','trello','jira','toonboom'],
+  },
+  '3d':{
+    desc:'Artista 3D con sólido conocimiento en renderización con Unreal Engine y modelado 3D. Creo visualizaciones de alto impacto con precisión técnica y detalle estético.',
+    about:'Soy un <em>Artista 3D</em> con sólido conocimiento en desarrollo de renderización utilizando Unreal Engine y en el modelado 3D. Mi experiencia me permite crear visualizaciones de alta calidad y aportar soluciones creativas e innovadoras en proyectos diversos. Me apasiona convertir ideas complejas en imágenes impactantes, siempre manteniendo un enfoque en la <b>precisión técnica</b> y en el <b>detalle estético</b>.',
+    exp:[
+      {date:'2020 — 2021',co:'GRUPO ORS',loc:'Morelia',role:'3D ARTIST & RENDERING',tags:['3D Art','Rendering','Unreal Engine'],b:['Modelado 3D especializado en mas de 20 dispositivos eléctricos para hospitales','Renderización estática y de video de alta calidad','Ajustes de materiales, iluminación y composición para presentación de producto.']},
+      {date:'2022 — 2024',co:'FREELANCER',loc:'Morelia',role:'UNITY DEVELOPER & 3D ARTIST',tags:['Unity','AR','3D Art'],b:['Desarrollo de aplicaciones en Unity para móviles con enfoque en Realidad Aumentada (AR)','Integración de modelos 3D en entornos interactivos.']},
+      {date:'2022 — Actualidad',co:'WASDEVELOPER STUDIO',loc:'Morelia',role:'3D ARTIST & ENVIRONMENT DEVELOPER',tags:['Unreal Engine','3D Art','Iluminación'],b:['Desarrollo especializado en la creación de entornos 3D en Unreal Engine 5','Modelado 3D de una amplia gama de props','Manejo experto de iluminación y renderizado de entornos y objetos']},
+    ],
+    skillType:'bars',
+    skills:[
+      {t:'Habilidades 3D',i:[
+        {n:'Rendering',p:85},{n:'Props',p:80},{n:'Modelado 3D',p:80},
+        {n:'Fotogrametría',p:75},{n:'Environment',p:75},
+        {n:'Animación 3D',p:70},{n:'Motion Graphics',p:50},
+      ]},
+    ],
+    tools:['ue5','unity','maya','cinema4d','zbrush','megascans','twinmotion'],
+  },
+};
+
+function rExp(d){
+  document.getElementById('exp-list').innerHTML=D[d].exp.map(e=>`
+    <div class="titem">
+      <div class="tdate">${e.date}</div>
+      <div class="tloc">📍 ${e.loc}</div>
+      <div class="tco">${e.co}</div>
+      <div class="trole">${e.role}</div>
+      <div class="ttags">${e.tags.map(t=>`<span class="ttag">${t}</span>`).join('')}</div>
+      <ul class="tlist">${e.b.map(b=>`<li>${b}</li>`).join('')}</ul>
+    </div>`).join('');
+}
+function rSkills(d){
+  const el=document.getElementById('skills-grid');
+  const data=D[d];
+  if(data.skillType==='list'){
+    el.innerHTML=`<div class="skcol" style="grid-column:1/-1"><div class="sktitle">Habilidades Transferibles</div><ul class="qa-list">${data.skills.map(s=>`<li class="qa-item">${s}</li>`).join('')}</ul></div>`;
+  } else {
+    el.innerHTML=data.skills.map(col=>`<div class="skcol"><div class="sktitle">${col.t}</div>${col.i.map(i=>`<div class="ski"><div class="skh"><span class="skn">${i.n}</span><span class="skp">${i.p}%</span></div><div class="skbar"><div class="skfill" data-w="${i.p}"></div></div></div>`).join('')}</div>`).join('');
+    setTimeout(()=>el.querySelectorAll('.skfill').forEach(b=>b.style.width=b.dataset.w+'%'),60);
+  }
+}
+function rTools(d){
+  document.getElementById('tools-grid').innerHTML=D[d].tools.map(t=>{const m=TM[t];return`<div class="tbadge"><div class="tico" style="background:${m.bg};border:1px solid ${m.bd}">${IC[t]}</div>${m.name}</div>`;}).join('');
+}
+function rAbout(d){
+  document.getElementById('about-text').innerHTML=D[d].about;
+  document.getElementById('hero-desc').innerHTML=D[d].desc;
+}
+
+document.getElementById('soc-grid').innerHTML=SOCIALS.map(s=>`<a href="${s.url}" target="_blank" class="soc-link" style="color:${s.color}">${s.svg} ${s.name}</a>`).join('');
+
+let disc='all';
+function apply(d){
+  disc=d;
+  document.querySelectorAll('.rchip').forEach(c=>c.classList.toggle('active',c.dataset.disc===d));
+  const els=['exp-list','skills-grid','tools-grid'].map(id=>document.getElementById(id));
+  els.forEach(e=>e.classList.add('fading'));
+  setTimeout(()=>{rExp(d);rSkills(d);rTools(d);rAbout(d);els.forEach(e=>e.classList.remove('fading'))},230);
+}
+document.querySelectorAll('.rchip').forEach(chip=>{
+  chip.addEventListener('click',()=>{const d=chip.dataset.disc;apply(d==='all'?'all':disc===d?'all':d);});
+});
+apply('all');
+
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth',block:'start'});});
+});
+const hbg=document.getElementById('hbg'),nl=document.getElementById('nlinks');
+hbg.addEventListener('click',()=>{hbg.classList.toggle('open');nl.classList.toggle('open')});
+nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{hbg.classList.remove('open');nl.classList.remove('open')}));
+
+const secs=document.querySelectorAll('section[id]'),navAs=document.querySelectorAll('.nlinks a');
+window.addEventListener('scroll',()=>{let cur='';secs.forEach(s=>{if(scrollY>=s.offsetTop-200)cur=s.id});navAs.forEach(a=>a.classList.toggle('act',a.getAttribute('href')==='#'+cur));});
+
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')}),{threshold:.08});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+
+const cur=document.getElementById('cur'),cdot=document.getElementById('cdot');
+let mx=0,my=0,cx=0,cy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cdot.style.left=mx+'px';cdot.style.top=my+'px'});
+(function loop(){cx+=(mx-cx)*.14;cy+=(my-cy)*.14;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(loop)})();
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('a,button,.rchip,.tbadge,.scard,.rcard,.skcol,.titem,.soc-link')){cur.style.transform='translate(-50%,-50%) scale(1.9)';cur.style.background='rgba(0,212,255,.08)';}
+  else{cur.style.transform='translate(-50%,-50%) scale(1)';cur.style.background='transparent';}
+});
+
+const cv=document.getElementById('bgc'),ctx=cv.getContext('2d');
+let W,H,pts=[];
+function sz(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+sz();addEventListener('resize',sz);
+class P{constructor(){this.r()}r(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.42;this.vy=(Math.random()-.5)*.42;this.a=Math.random()*.32+.07;this.sz=Math.random()*1.3+.4}u(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W)this.vx*=-1;if(this.y<0||this.y>H)this.vy*=-1}d(){ctx.beginPath();ctx.arc(this.x,this.y,this.sz,0,6.28);ctx.fillStyle=`rgba(0,212,255,${this.a})`;ctx.fill()}}
+for(let i=0;i<70;i++)pts.push(new P());
+(function loop(){ctx.clearRect(0,0,W,H);ctx.strokeStyle='rgba(0,212,255,.023)';ctx.lineWidth=1;for(let x=0;x<W;x+=65){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(let y=0;y<H;y+=65){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}for(let i=0;i<pts.length;i++){pts[i].u();pts[i].d();for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<130){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(0,212,255,${(1-d/130)*.18})`;ctx.lineWidth=.5;ctx.stroke()}}}requestAnimationFrame(loop);})();
+</script>
+</body>
+</html>
